@@ -3,11 +3,11 @@ services:
     name: mindease-backend
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: ./build.sh
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.9
       - key: DATABASE_URL
         fromDatabase:
           name: mindease-db
@@ -22,6 +22,12 @@ services:
         value: openai
       - key: DEBUG
         value: false
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: PIP_NO_CACHE_DIR
+        value: "1"
+      - key: PIP_DISABLE_PIP_VERSION_CHECK
+        value: "1"
 
 databases:
   - name: mindease-db
