@@ -3,7 +3,9 @@ services:
     name: mindease-backend
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt --no-cache-dir
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
@@ -22,6 +24,8 @@ services:
         value: openai
       - key: DEBUG
         value: false
+      - key: PYTHONPATH
+        value: /opt/render/project/src
 
 databases:
   - name: mindease-db
