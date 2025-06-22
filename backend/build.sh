@@ -11,4 +11,8 @@ pip install --upgrade pip setuptools wheel
 echo "📥 Installing Python packages..."
 pip install -r requirements.txt --no-cache-dir --prefer-binary
 
+# Create database tables
+echo "🗄️  Setting up database..."
+python3 create_tables.py
+
 echo "✅ Build completed successfully!" 
