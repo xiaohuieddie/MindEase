@@ -38,14 +38,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware - Updated for local development
+# CORS middleware - Updated for local development and production
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Next.js frontend
+        "http://localhost:3000",  # Next.js frontend (local)
         "http://127.0.0.1:3000",  # Alternative localhost
         "http://localhost:3001",  # In case port 3000 is busy
         "http://127.0.0.1:3001",
+        "https://mind-ease-snowy.vercel.app",  # Deployed frontend
     ],
     allow_credentials=True,
     allow_methods=["*"],
