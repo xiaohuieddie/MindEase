@@ -82,6 +82,35 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  body {
+    @apply relative bg-white dark:bg-black;
+  }
+  .light body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 50% 50% at top left, rgba(125, 211, 252, 0.2), transparent 70%),
+      radial-gradient(ellipse 50% 50% at top right, rgba(254, 215, 170, 0.3), transparent 70%),
+      radial-gradient(ellipse 50% 50% at bottom left, rgba(254, 215, 170, 0.3), transparent 70%),
+      radial-gradient(ellipse 50% 50% at bottom right, rgba(125, 211, 252, 0.2), transparent 70%),
+      radial-gradient(ellipse 60% 70% at center, rgba(254, 215, 170, 0.15), transparent 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .dark body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 50% 50% at top left, rgba(202, 138, 4, 0.25), transparent 70%),
+      radial-gradient(ellipse 50% 50% at top right, rgba(192, 38, 211, 0.15), transparent 70%),
+      radial-gradient(ellipse 50% 50% at bottom left, rgba(192, 38, 211, 0.15), transparent 70%),
+      radial-gradient(ellipse 50% 50% at bottom right, rgba(202, 138, 4, 0.25), transparent 70%),
+      radial-gradient(ellipse 70% 80% at center, rgba(202, 138, 4, 0.2), transparent 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
 }
 
 @layer base {

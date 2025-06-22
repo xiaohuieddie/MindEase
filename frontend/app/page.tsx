@@ -17,7 +17,11 @@ import {
   ChevronRight,
   Settings,
   BarChart3,
+  Flame,
+  ShieldCheck,
 } from "lucide-react"
+import { useRouter } from 'next/navigation'
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 const emotions = [
   { emoji: "😊", label: "Happy", color: "bg-yellow-100 text-yellow-600" },
@@ -80,6 +84,7 @@ export default function MindEaseHomepage() {
     if (hour < 17) return "afternoon"
     return "evening"
   })
+  const router = useRouter()
 
   const getGreeting = () => {
     const greetings = {
@@ -100,42 +105,43 @@ export default function MindEaseHomepage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-peach-50 to-cream-50">
+    <div className="min-h-screen bg-transparent text-gray-900 dark:text-white">
       {/* Header */}
       <div className="flex items-center justify-between p-6 pt-12">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
             <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">MindEase</h1>
-            <p className="text-xs text-gray-500">Anonymous • Secure</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">MindEase</h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Anonymous • Secure</p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" className="w-10 h-10 p-0">
-            <BarChart3 className="w-5 h-5 text-gray-600" />
+        <div className="flex items-center space-x-1">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
+            <BarChart3 className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" size="sm" className="w-10 h-10 p-0">
-            <Settings className="w-5 h-5 text-gray-600" />
+          <Button variant="ghost" size="sm" className="w-10 h-10 p-0 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
+            <Settings className="w-5 h-5" />
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-6 space-y-8">
+      <div className="px-6 pb-12 space-y-8">
         {/* Greeting Section */}
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900">{getGreeting()}</h2>
-          <p className="text-gray-600">{getSubGreeting()}</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{getGreeting()}</h2>
+          <p className="text-gray-600 dark:text-gray-400">{getSubGreeting()}</p>
         </div>
 
         {/* Emotion Cloud */}
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">How are you feeling?</h3>
-              <Badge variant="secondary" className="text-xs">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">How are you feeling?</h3>
+              <Badge variant="outline" className="text-xs border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400">
                 Tap to select
               </Badge>
             </div>
@@ -144,23 +150,21 @@ export default function MindEaseHomepage() {
                 <button
                   key={emotion.label}
                   onClick={() => setSelectedEmotion(emotion.label)}
-                  className={`p-3 rounded-xl transition-all duration-200 ${
+                  className={`p-3 rounded-xl transition-all duration-200 border border-gray-200 dark:border-gray-800 ${
                     selectedEmotion === emotion.label
-                      ? "scale-110 shadow-lg " + emotion.color
-                      : "bg-gray-50 hover:bg-gray-100"
+                      ? "scale-110 shadow-lg bg-gradient-to-br from-pink-500 to-purple-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800"
                   }`}
                 >
                   <div className="text-2xl mb-1">{emotion.emoji}</div>
-                  <div className="text-xs font-medium text-gray-700">{emotion.label}</div>
+                  <div className="text-xs font-medium text-gray-700 dark:text-gray-300">{emotion.label}</div>
                 </button>
               ))}
             </div>
             {selectedEmotion && (
               <Button
-                className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white"
-                onClick={() => {
-                  /* Navigate to chat with emotion context */
-                }}
+                className="w-full mt-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white"
+                onClick={() => router.push('/chat')}
               >
                 Start conversation feeling {selectedEmotion.toLowerCase()}
                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -171,20 +175,23 @@ export default function MindEaseHomepage() {
 
         {/* Quick Start Options */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Quick Start</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Start</h3>
 
           {/* Free-form Chat */}
-          <Card className="border-0 shadow-lg bg-gradient-to-r from-orange-400 to-orange-500 text-white">
+          <Card
+            className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+            onClick={() => router.push('/chat')}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <MessageCircle className="w-6 h-6" />
+                  <MessageCircle className="w-6 h-6 text-purple-500 dark:text-purple-400" />
                   <div>
-                    <h4 className="font-semibold">{"What's on your mind?"}</h4>
-                    <p className="text-sm opacity-90">Start a free-form conversation</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{"What's on your mind?"}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Start a free-form conversation</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-600" />
               </div>
             </CardContent>
           </Card>
@@ -192,14 +199,14 @@ export default function MindEaseHomepage() {
           {/* Daily Topics */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-gray-900">Daily Topics</h4>
-              <Badge variant="outline" className="text-xs">
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Daily Topics</h4>
+              <Badge variant="outline" className="text-xs border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400">
                 <Calendar className="w-3 h-3 mr-1" />
                 Today
               </Badge>
             </div>
             {dailyTopics.map((topic, index) => (
-              <Card key={index} className="border-0 shadow-md bg-white/80 backdrop-blur-sm">
+              <Card key={index} className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -209,11 +216,11 @@ export default function MindEaseHomepage() {
                         <topic.icon className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-900">{topic.title}</h5>
-                        <p className="text-sm text-gray-600">{topic.subtitle}</p>
+                        <h5 className="font-medium text-gray-900 dark:text-white">{topic.title}</h5>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{topic.subtitle}</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                    <ChevronRight className="w-4 h-4 text-gray-500 dark:text-gray-700" />
                   </div>
                 </CardContent>
               </Card>
@@ -223,10 +230,10 @@ export default function MindEaseHomepage() {
 
         {/* Wellness Tools */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Quick Wellness</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Your Journey</h3>
           <div className="grid grid-cols-1 gap-3">
             {quickPractices.map((practice, index) => (
-              <Card key={index} className="border-0 shadow-md bg-white/80 backdrop-blur-sm">
+              <Card key={index} className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -234,51 +241,45 @@ export default function MindEaseHomepage() {
                         <practice.icon className="w-5 h-5" />
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-900">{practice.title}</h5>
+                        <h5 className="font-medium text-gray-900 dark:text-white">{practice.title}</h5>
                         <div className="flex items-center space-x-2">
                           <Clock className="w-3 h-3 text-gray-500" />
-                          <span className="text-sm text-gray-600">{practice.duration}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{practice.duration}</span>
                         </div>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost" className="text-orange-600 hover:text-orange-700">
+                    <Button size="sm" variant="ghost" className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
                       Start
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
+            <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                      <Flame className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-900 dark:text-white">3-day streak!</h5>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Keep it up for a week for a surprise</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="space-y-4 pb-8">
-          <h3 className="text-lg font-semibold text-gray-900">Your Journey</h3>
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center mx-auto">
-                  <TrendingUp className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">3 days streak</h4>
-                  <p className="text-sm text-gray-600">{"You've been consistent with check-ins"}</p>
-                </div>
-                <Button variant="outline" className="w-full border-green-200 text-green-700 hover:bg-green-50">
-                  View mood trends
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
-      {/* Bottom Navigation Hint */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200 p-4">
-        <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span>Anonymous session active</span>
-          <Button variant="link" className="text-xs text-orange-600 p-0 h-auto">
+      {/* Footer */}
+      <div className="sticky bottom-0 p-4 backdrop-blur-md bg-white/30 dark:bg-black/30 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-center space-x-2 text-xs text-gray-600 dark:text-gray-400">
+          <ShieldCheck className="w-4 h-4 text-green-500" />
+          <span>Anonymous session active. Your data is safe.</span>
+          <Button variant="link" className="text-xs text-purple-600 dark:text-purple-500 p-0 h-auto">
             Save progress?
           </Button>
         </div>
