@@ -202,29 +202,50 @@ def get_wellness_progress(
             detail="Authentication required"
         )
     
-    start_date = datetime.utcnow() - timedelta(days=days)
-    
-    # Get wellness activities by type
-    wellness_data = db.query(
-        WellnessActivity.activity_type,
-        func.count(WellnessActivity.id).label('total'),
-        func.sum(func.case([(WellnessActivity.completed == True, 1)], else_=0)).label('completed')
-    ).filter(
-        and_(
-            WellnessActivity.user_id == current_user.id,
-            WellnessActivity.created_at >= start_date
+    try:
+        start_date = datetime.utcnow() - timedelta(days=days)
+        
+        # Get all wellness activities for the user
+        activities = db.query(WellnessActivity).filter(
+            and_(
+                WellnessActivity.user_id == current_user.id,
+                WellnessActivity.created_at >= start_date
+            )
+        ).all()
+        
+        # Group by activity type and calculate stats
+        activity_stats = {}
+        for activity in activities:
+            if activity.activity_type not in activity_stats:
+                activity_stats[activity.activity_type] = {"total": 0, "completed": 0}
+            
+            activity_stats[activity.activity_type]["total"] += 1
+            if activity.completed:
+                activity_stats[activity.activity_type]["completed"] += 1
+        
+        # Format response
+        result = []
+        for activity_type, stats in activity_stats.items():
+            completion_rate = 0.0
+            if stats["total"] > 0:
+                completion_rate = (stats["completed"] / stats["total"]) * 100
+            
+            result.append({
+                "activity_type": activity_type,
+                "total": stats["total"],
+                "completed": stats["completed"],
+                "completion_rate": round(completion_rate, 1)
+            })
+        
+        return result
+        
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in wellness progress: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
         )
-    ).group_by(WellnessActivity.activity_type).all()
-    
-    return [
-        {
-            "activity_type": entry.activity_type,
-            "total": entry.total,
-            "completed": entry.completed,
-            "completion_rate": round((entry.completed / entry.total * 100), 1) if entry.total > 0 else 0
-        }
-        for entry in wellness_data
-    ]
 
 @router.get("/emotions/summary")
 def get_emotion_summary(
